@@ -13,20 +13,21 @@ matrix:
             - g++-4.9
       env:
          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+jobs:
+  include:
+    - stage: setup_env
+      script: DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+      script: mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+      script: |
+                CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"
+                mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+                export PATH=${DEPS_DIR}/cmake/bin:${PATH}
 
-install:
-  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
-  - |
-      CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"
-      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
-      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    - stage: compile
+      script: mkdir -p ${TRAVIS_BUILD_DIR}/build
+      script: cd ${TRAVIS_BUILD_DIR}/build
+      script: cmake ..
+      script: make -j 2
 
-before_script:
-  - mkdir -p ${TRAVIS_BUILD_DIR}/build
-  - cd ${TRAVIS_BUILD_DIR}/build 
-  - cmake ..
-
-script:
-  - make -j 2
-  - test/vibeam_test
+    - stage: test
+      script: test/vibeam_test
