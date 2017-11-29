@@ -23,19 +23,15 @@ jobs:
                 mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
                 export PATH=${DEPS_DIR}/cmake/bin:${PATH}
 
-    - stage: compile
+    - stage: compile_and_test
       script: |
                 mkdir -p ${TRAVIS_BUILD_DIR}/build
                 cd ${TRAVIS_BUILD_DIR}/build
+                cmake --version
                 cmake ..
                 make -j 2
-
-    - stage: test
-      script: |
-                cd ${TRAVIS_BUILD_DIR}/build
                 test/vibeam_test
 
 stages:
   - setup_env
-  - compile
-  - test
+  - compile_and_test
