@@ -15,23 +15,21 @@ matrix:
          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 jobs:
   include:
-    - stage: setup_env
-      script: DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-      script: mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+    - stage: compile
       script: |
-                CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"
-                mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
-                export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+                mkdir build
+                cd build
+                cmake ..
+                make -j 2
 
-    - stage: compile_and_test
+    - stage: test
       script: |
-                mkdir -p ${TRAVIS_BUILD_DIR}/build
-                cd ${TRAVIS_BUILD_DIR}/build
-                cmake --version
+                mkdir build
+                cd build
                 cmake ..
                 make -j 2
                 test/vibeam_test
 
 stages:
-  - setup_env
-  - compile_and_test
+  - compile
+  - test
