@@ -24,10 +24,11 @@ jobs:
                 export PATH=${DEPS_DIR}/cmake/bin:${PATH}
 
     - stage: compile
-      script: mkdir -p ${TRAVIS_BUILD_DIR}/build
-      script: cd ${TRAVIS_BUILD_DIR}/build
-      script: cmake ..
-      script: make -j 2
+      script: |
+                mkdir -p ${TRAVIS_BUILD_DIR}/build
+                cd ${TRAVIS_BUILD_DIR}/build
+                cmake ..
+                make -j 2
 
     - stage: test
-      script: test/vibeam_test
+      script: ${TRAVIS_BUILD_DIR}/build/test/vibeam_test
