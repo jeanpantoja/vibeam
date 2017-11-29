@@ -31,4 +31,11 @@ jobs:
                 make -j 2
 
     - stage: test
-      script: ${TRAVIS_BUILD_DIR}/build/test/vibeam_test
+      script: |
+                cd ${TRAVIS_BUILD_DIR}/build
+                test/vibeam_test
+
+stages:
+  - setup_env
+  - compile
+  - test
