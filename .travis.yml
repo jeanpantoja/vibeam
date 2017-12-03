@@ -1,9 +1,9 @@
 language: cpp
+dist: trusty
 sudo: false
 
 matrix:
   include:
-    # works on Precise and Trusty
     - os: linux
       addons:
         apt:
@@ -13,23 +13,12 @@ matrix:
             - g++-4.9
       env:
          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
-jobs:
-  include:
-    - stage: compile
-      script: |
-                mkdir build
-                cd build
-                cmake ..
-                make -j 2
 
-    - stage: test
-      script: |
-                mkdir build
-                cd build
-                cmake ..
-                make -j 2
-                test/vibeam_test
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
 
-stages:
-  - compile
-  - test
+script:
+  - make -j 2
+  - ./vibeam_test
